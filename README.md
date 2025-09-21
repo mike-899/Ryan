@@ -6,15 +6,11 @@ A real-time computer vision system that detects colors in specific regions of in
 
 - [Overview](#overview)
 - [Features](#features)
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
 - [Usage](#usage)
 - [System Architecture](#system-architecture)
 - [Algorithm Flow](#algorithm-flow)
 - [Troubleshooting](#troubleshooting)
 - [Technical Specifications](#technical-specifications)
-- [Contributing](#contributing)
 
 ## Overview
 
