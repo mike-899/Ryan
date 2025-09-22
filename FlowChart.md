@@ -94,3 +94,85 @@ flowchart TD
     Emit --> FrameLoop
   end
 ```
+
+```mermaid
+flowchart TD
+  %% Inicio y variables
+  start[Inicio encender auto]
+  iniciar_bucle[Iniciar bucle principal]
+  vueltas_init[vueltas = 0]
+  pelotas_init[pelotas = 0]
+
+  %% Percepcion y seguimiento
+  tomar_foto[Tomar foto pista]
+  evaluar_pista[Evaluar pista decidir seguimiento]
+  detectar_amarillo{Detecta color amarillo}
+  accion_modo[Determinar accion modo rescate]
+  ejecutar_accion[Ejecutar accion]
+  medir_dist[Medir sensor distancia frontal]
+  obj_frente{Objeto en frente}
+  esquivar[Esquivar obstaculo reanudar]
+  seguir_linea[Seguir linea]
+
+  %% Mapeo
+  posicionarse[Posicionarse para mapeo]
+  cond_vueltas{vueltas menor que 4}
+  girar[Girar y vueltas = vueltas mas 1]
+  sensor_abajo{Sensor inferior detecta negro}
+  guardar_zona[Guardar posicion zona_segura]
+  emitir_rayos[Emitir 3 rayos registrar lecturas]
+  guardar_coords[Guardar coordenadas en matriz]
+  aplicar_dbscan[Aplicar DBSCAN sobre matriz coordenadas]
+
+  %% Rescate
+  iniciar_rescate[Iniciar rutina rescate]
+  pelotas_cond{pelotas mayor que 0}
+  calcular_ruta[Calcular ruta A aster hacia objetivo]
+  ir_pelota[Ir a la pelota]
+  recoger[Recoger pelota]
+  ir_zona[Ir a zona_segura]
+  soltar[Soltar pelota]
+  imprimir[Imprimir GANAMOS]
+
+  %% Flujo principal
+  start --> iniciar_bucle
+  iniciar_bucle --> vueltas_init
+  vueltas_init --> pelotas_init
+  pelotas_init --> tomar_foto
+
+  %% Bucle de toma de foto y decision frontal
+  tomar_foto --> evaluar_pista
+  evaluar_pista --> detectar_amarillo
+  detectar_amarillo -->|Si| accion_modo
+  accion_modo --> ejecutar_accion
+  ejecutar_accion --> posicionarse
+  detectar_amarillo -->|No| medir_dist
+
+  medir_dist --> obj_frente
+  obj_frente -->|Si| esquivar
+  esquivar --> tomar_foto
+  obj_frente -->|No| seguir_linea
+  seguir_linea --> tomar_foto
+
+  %% Mapeo
+  posicionarse --> cond_vueltas
+  cond_vueltas -->|Si| girar
+  girar --> sensor_abajo
+  sensor_abajo -->|Si| guardar_zona
+  sensor_abajo -->|No| emitir_rayos
+  guardar_zona --> emitir_rayos
+  emitir_rayos --> guardar_coords
+  guardar_coords --> cond_vueltas
+  cond_vueltas -->|No| aplicar_dbscan
+  aplicar_dbscan --> iniciar_rescate
+
+  %% Rescate
+  iniciar_rescate --> pelotas_cond
+  pelotas_cond -->|Si| calcular_ruta
+  calcular_ruta --> ir_pelota
+  ir_pelota --> recoger
+  recoger --> ir_zona
+  ir_zona --> soltar
+  soltar --> pelotas_cond
+  pelotas_cond -->|No| imprimir
+```
